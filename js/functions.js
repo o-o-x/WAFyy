@@ -547,10 +547,6 @@ GetUnconfigured();
 getFilterRules();
 parseSystemOptions();
 
-
-
-// log check
-console.log( "ready (:" );
-
+//console.log( "ready (:" );
 
 });
