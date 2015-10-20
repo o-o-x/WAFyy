@@ -544,9 +544,16 @@ GetPayloadList();
 // get unconfigured parameters list
 GetUnconfigured();
 
+//
 getFilterRules();
+
+//
 parseSystemOptions();
 
-//console.log( "ready (:" );
+
+
+// log check
+console.log( "ready (:" );
+
 
 });
