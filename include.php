@@ -4,7 +4,7 @@
 //error_reporting(E_ALL);
 //ini_set("display_errors", 1);
 
-$db = new SQLite3('/var/lib/openshift/55e445b32d5271628800001e/app-root/runtime/repo/WAFyy/db/WAFyy.sqlite3');
+$db = new SQLite3(realpath(dirname(__FILE__)).'/db/WAFyy.sqlite3');
 $value_limit = intval(wheelValue('value_limit'));
 $special = wheelValue('special_char');
 $collect_headers = wheelValue('collect_headers');
