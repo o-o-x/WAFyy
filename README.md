@@ -10,6 +10,4 @@
 
 #INSTALL
 
-	# Create a folder named "db" in the main directory
-	# Create a file named WAFyy.sqlite3
-	# 
+	# Upload WAFyy to a virtual directory and brows to /start.php 
