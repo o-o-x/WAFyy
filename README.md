@@ -1,4 +1,4 @@
-#WAFyy
+#WAFyy - README
 
 	# The idea
 
