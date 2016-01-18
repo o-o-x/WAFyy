@@ -1,3 +1,72 @@
+blockquote {
+
+  background-color: #F2DEDE;
+}
+
+
+blockquote small {
+
+  color: #333333;
+}
+
+
+small, .small {
+
+    font-size: 100%;
+}
+
+.header-set {
+
+      margin-right: 10px;
+}
+
+#headers_config p {
+
+  color: #468847;
+  margin: 3px 0 0 0;
+}
+
+
+#headers_config .new {
+
+ /* background-color: #dddddd;*/
+
+}
+
+#headers_config .used {
+
+    border-bottom: thin dotted #DD4814;
+
+}
+
+.collection-status {
+
+  float: right;
+
+}
+
+.header-filter:hover {
+
+    opacity: 0.7;  
+}
+
+
+console {
+
+  color: #DFE5CD;
+}
+
+
+#regex_console {
+
+  background-color: black;
+  height: 300px;
+  box-shadow: 0 5px 15px;
+  overflow: auto;
+}
+
+
+
 .logout {
 
   float: right;
@@ -61,16 +130,45 @@
 }
 
 .modal-dialog {
-    overflow: auto;
+    /*overflow: auto;*/
     max-height: 88%;
 }
 
-.btn-group, .btn-group-vertical {
-    margin-left: 0px;
-    width: 100%;
+.btn-group .btn-group-vertical {
+    margin-right: 5px;
 }
 
 #active_extra_char {
     width: 50%;
     float: right;
+}
+
+
+#add_regex_button {
+
+    float: right;
+
+}
+
+#payload_type {
+
+  display: block;
+  margin-left: 0px;
+
+}
+
+#Unconfigured {
+
+  height: 357px;
+  display: block;
+  overflow: auto;
+
+}
+
+#FilterRules {
+
+  height: 227px;
+  display: block;
+  overflow: auto;
+
 }

@@ -1,17 +1,19 @@
 <?php 
 
 
-	error_reporting(E_ALL);
-	//ini_set("display_errors", 1);
-
+	// error_reporting(E_ALL);
+	// ini_set("display_errors", 1);
 
 	//avoid clickjacking
  	header('X-Frame-Options: DENY');
 	header('Access-Control-Allow-Origin: '.$_SERVER['SERVER_NAME']);
 
+	// BCRYPT include for PHP < 5.5
+	require_once 'include/bcrypt.php';
 
-
-
+	// Jcryption includes
+	require_once 'jcryption/include/sqAES.php';
+	require_once 'jcryption/include/JCryption.php';
 
 	$pdb = new SQLite3('db/WAFyy.sqlite3');
 
@@ -25,40 +27,14 @@
 		return ($row['value']);
 	}
 
-	function getSalt()
-	{
-		global $pdb;
-		$stmt = $pdb->prepare("SELECT value FROM cogwheel WHERE nick = ?");
-		$stmt->bindValue(1, 'salt',SQLITE3_TEXT);	
-		$res = $stmt->execute();
-		$row = $res->fetchArray(SQLITE3_BOTH);
-		return ($row['value']);
-	}
-
-	function setSalt($new_salt)
-	{
-		global $pdb;
-		$stmt = $pdb->prepare("UPDATE cogwheel SET value = ? WHERE nick = ?");
-		$stmt->bindValue(1, $new_salt ,SQLITE3_TEXT);	
-		$stmt->bindValue(2, 'salt' ,SQLITE3_TEXT);	
-		$res = $stmt->execute();
-	}
-
-
 		// get password from DB
 		$password = getPassword();
 
-		// get password salt from DB
-		$saltkey = getSalt();
-
-		// set salt before password
-		$password = $saltkey.$password;
-
 		// define salted password in a global parameter
-		define("SYSTEMPASSWORD", hash('sha256', $password));
+		define("SYSTEMPASSWORD", $password);
 		
 		// define cookie name
-		define("COOKIENAME", preg_replace('/[^a-zA-Z0-9_]/', '_', 'wafyy') );
+		define("COOKIENAME", 'ships');
 
 
 	class Authorization
@@ -71,6 +47,7 @@
 
 	public function __construct()
 	{
+		session_start();
 		// the salt and password encrypting is probably unnecessary protection but is done just
 		// for the sake of being very secure
 		if(!isset($_SESSION[COOKIENAME.'_salt']) && !isset($_COOKIE[COOKIENAME.'_salt']))
@@ -85,7 +62,7 @@
 		}
 
 		// salted and encrypted password used for checking
-		$this->system_password_encrypted = hash('sha256', (SYSTEMPASSWORD."_".$_SESSION[COOKIENAME.'_salt']) );
+		$this->system_password_encrypted = hash('sha256', (SYSTEMPASSWORD.'_'.$_SESSION[COOKIENAME.'_salt']) );
 
 		$this->authorized =
 			// no password
@@ -96,29 +73,19 @@
 			|| isset($_COOKIE[COOKIENAME]) && isset($_COOKIE[COOKIENAME.'_salt']) && hash('sha256', (SYSTEMPASSWORD."_".$_COOKIE[COOKIENAME.'_salt']) ) == $_COOKIE[COOKIENAME];
 	}
 
-	public function attemptGrant($password, $remember)
+	public function attemptGrant($password)
 	{
-		if ($password == SYSTEMPASSWORD) {
-			if ($remember) {
-				// user wants to be remembered, so set a cookie
-				$expire = time()+60*60*24*30; //set expiration to 1 month from now
-				setcookie(COOKIENAME, $this->system_password_encrypted, $expire, null, null, null, true);
-				setcookie(COOKIENAME."_salt", $_SESSION[COOKIENAME.'_salt'], $expire, null, null, null, true);
-			} else {
-				// user does not want to be remembered, so destroy any potential cookies
-				setcookie(COOKIENAME, "", time()-86400, null, null, null, true);
-				setcookie(COOKIENAME."_salt", "", time()-86400, null, null, null, true);
-				unset($_COOKIE[COOKIENAME]);
-				unset($_COOKIE[COOKIENAME.'_salt']);
-			}
+		if (password_verify($password, SYSTEMPASSWORD)) {
+
+			$expire = time()+60*15; //set expiration to 15 minutes
+
+			setcookie(COOKIENAME, $this->system_password_encrypted, $expire, null, null, null, true);
+			setcookie(COOKIENAME.'_salt', $_SESSION[COOKIENAME.'_salt'], $expire, null, null, null, true);
 
 			$_SESSION[COOKIENAME.'password'] = $this->system_password_encrypted;
 			$this->authorized = true;
 			return true;
 		}
-		// re-salt 
-		global $auth;
-		$auth->SaltMyPass();
 
 		$this->login_failed = true;
 		return false;
@@ -134,10 +101,6 @@
 		session_unset();
 		session_destroy();
 		$this->authorized = false;
-
-		// re-salt 
-		global $auth;
-		$auth->SaltMyPass();
 	}
 
 
@@ -151,12 +114,6 @@
 		return $this->login_failed;
 	}
 
-	public function SaltMyPass()
-	{
-		setSalt($this->generateSalt(7));
-	}
-
-
 	private static function generateSalt($saltSize)
 	{
 		$set = 'ABCDEFGHiJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -169,32 +126,19 @@
 	}
 
 }
-
-	//- Check user authentication, login and logout
-	$auth = new Authorization(); //create authorization object
-
-
+	// check user authentication, login and logout
+	$auth = new Authorization();
 
 	// check if user has attempted to log in
 	function Login($values)
 	{
 		global $auth;
 		$data = (array) json_decode($values);
-		$auth->attemptGrant($data['password'], isset($data['remember']));
+		$auth->attemptGrant($data['password']);
 		if(!$auth->isAuthorized())
 		{	
 			header('HTTP/1.0 401 Unauthorized');
 		}
-
-		// renew salt
-
-		
-	}
-
-
-	if(!$auth->isAuthorized() && isset($_GET['login']))
-	{	
-		Login(@file_get_contents('php://input'));
 	}
 
 	// check authorization status
@@ -213,12 +157,10 @@
 		header('HTTP/1.0 401 Unauthorized');
 	}
 
-	// get password salt
-	if (isset($_GET['getSalt'])){
-		$key = getSalt();
-		$result[] = array('saltkey' => $key);
-		echo json_encode($result);
+	if(!$auth->isAuthorized() && isset($_GET['login']))
+	{	
+		JCryption::decrypt();
+		Login($_POST['data']);
 	}
-
 
 ?>
