@@ -2,7 +2,7 @@
 
 	# The idea
 
-		$ build simple web application firewall used to prevent most injection vulnerabilities
+		$ build simple web application firewall used to prevent most of the web vulnerabilities
 
 	# 
 
