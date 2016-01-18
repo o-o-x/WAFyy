@@ -189,7 +189,7 @@ function advanced_popup() {
   out += '<button type="button" class="btn btn-primary" id="submit_filter">Set Filter!</button>';
   out += '</div></div></div></div>';
 
-  $('#filter').children('#popup').html(out).children('.modal').show();
+  $('#body').children('#popup').html(out).children('.modal').show();
   if(unconfigured_array[index].contains_numbers){ $( "#type_numbers" ).addClass( 'active'); }
   if(unconfigured_array[index].contains_alpha){ $( "#type_letters" ).addClass( 'active'); }
   if(JSON.parse(unconfigured_array[index].uniq_char) != null){ $( "a[id|='type_special']" ).addClass( 'active'); $( "#type_special_history" ).addClass( 'active'); }
@@ -454,7 +454,6 @@ return false;
 });
 
 
-
 // ### CogWheel ###
 
 function parseSystemOptions() {
@@ -475,7 +474,7 @@ function parseSystemOptions() {
           out += '<input id="value" class="form-control '+arr[i].nick+'" type="text">'
           out += '<input id="nick" type="hidden" value="'+(arr[i].nick)+'">'
           out += '<span class="input-group-btn">'
-          out += '<button class="btn btn-default" type="button" id="weldwheel">Weld</button>'
+          out += '<button class="btn btn-default ' + arr[i].nick + 'click" type="button" id="weldwheel">Weld</button>'
           out += '</span></div></div>'
           $( '#tuning' ).append(out);
           $( '.'+arr[i].nick ).val(arr[i].value);
@@ -521,8 +520,142 @@ return false;
 
 });
 
+// refresh after password change
+$(document).on("click",".encryptedpasswordclick",
+function() {window.location.href = 'index.php';});
+
 
 // ### End of CogWheel ###
+
+function LoginPopup()
+{
+
+  var out = '';
+  out += '';
+}
+
+
+//global variable
+var saltkey;
+
+function PreAuthorizationCheck(getstatus){
+
+    $.ajax({  type: 'GET',
+              dataType: 'json',
+              url: 'login.php?getSalt',
+              data: '',
+              complete: function(data){
+                var arr = JSON.parse(data.responseText);
+                saltkey = arr[0].saltkey;
+                console.log('Saltkey = ' + arr[0].saltkey);
+                if(getstatus){ AuthorizationCheck(); }
+              }
+
+            });
+}
+
+
+function AuthorizationCheck(){
+
+  $.ajax({
+      type: 'POST',
+      url: 'login.php?status',
+      data: '',
+      complete: function(jqxhr, txt_status){
+
+        if(jqxhr.status == 200)
+        {
+           // alert('autherized!');
+        }
+
+        if(jqxhr.status == 401)
+        {
+          $( '#login_popup' ).children( '.modal' ).show();
+        }
+
+      }
+  });
+}
+
+// login event by click
+$(document).on("click","#submit_password",
+function() {
+
+  //login function 
+  Login();
+
+});
+
+// login event by pressing Enter (key)
+$('#password').keypress(function (e) {
+  if (e.which == 13) {
+    Login();
+    return false;
+  }
+});
+
+
+
+
+//login function
+function Login()
+{
+  var psk = $( '#password' ).val();
+  psk = Sha256.hash(psk);
+  psk = saltkey + psk;
+  console.log(psk);
+  psk = Sha256.hash(psk); //hash in SHA256 before submitting
+  console.log(psk);
+
+  var rmb = $( '#remember' ).is(':checked');
+  var dataString = JSON.stringify({ password:psk , remember:rmb});
+
+  $( '#submit_password' ).html('Processing...').animate({opacity: 0.37,width: '100%'}, 277, function() {});
+  $.ajax({
+      type: 'POST',
+      dataType: 'json',
+      url: 'login.php?login',
+      data: dataString,
+      cache: false,
+      complete: function(jqxhr, txt_status){
+
+        if(jqxhr.status == 200)
+        {
+          window.location.href = 'index.php';
+        }
+
+        if(jqxhr.status == 401)
+        {
+          PreAuthorizationCheck(0);
+          $( '#password' ).val('');
+          $( '#submit_password' ).animate({opacity: 0.99,width: '20%'}, 277, function() {$(this).removeAttr('style')}).html('Try again');
+        }
+
+      }
+  });  
+}
+
+// logout function 
+$(document).on("click","#logout",
+function() {
+
+  $('body').html('Exiting...').animate({opacity: 0.0}, 500, function() {});
+  $.ajax({
+      type: 'POST',
+      dataType: 'json',
+      url: 'login.php?logout',
+      data: 'logout=1' ,
+      cache: false,
+      complete: function(jqxhr, txt_status){
+
+        if(jqxhr.status == 401)
+        {
+          window.location.href = 'index.php';
+        }
+
+      }
+  });
+});
 
 
 
@@ -532,25 +665,42 @@ if( window != top )
   top.location.href=location.href; 
 }
 
-
 // prepare JQUERY tabs
 $( "#tabs" ).tabs();
 
 
 
+
+
+
+$(document).on("click",".body",function() { 
+  // get body functions
+  GetUnconfigured();
+  getFilterRules();
+
+});
+
+$(document).on("click",".headers",function() {
+// get headers functions
+
+});
+
+$(document).on("click",".regex",function() { 
+
 // get waf payload list
 GetPayloadList();
 
-// get unconfigured parameters list
-GetUnconfigured();
+});
 
-//
-getFilterRules();
+$(document).on("click",".cogwheel",function() { 
 
-//
+// get cogwheels information
 parseSystemOptions();
 
+});
 
+
+PreAuthorizationCheck(1);
 
 // log check
 console.log( "ready (:" );
