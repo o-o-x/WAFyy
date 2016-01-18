@@ -1,6 +1,12 @@
 <?php
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
+
+if(isset($_GET['location']))
+{
+	echo 'Linux:<input value="'.realpath(dirname(__FILE__)).'/include.php"><br>';
+	echo 'Windows:<input value="'.realpath(dirname(__FILE__)).'\include.php"><br>';
+}
+//error_reporting(E_ALL);
+//ini_set("display_errors", 1);
 
 $db = new SQLite3('/var/lib/openshift/55e445b32d5271628800001e/app-root/runtime/repo/WAFyy/db/WAFyy.sqlite3');
 $value_limit = intval(wheelValue('value_limit'));
