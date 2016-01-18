@@ -2,8 +2,10 @@
 
 if(isset($_GET['location']))
 {
-	echo 'Linux:<input value="'.realpath(dirname(__FILE__)).'/include.php"><br>';
-	echo 'Windows:<input value="'.realpath(dirname(__FILE__)).'\include.php"><br>';
+	echo '<h2>Include.php location</h2>';
+	echo '<h3>Copy one of the following commands:</h3><br>';
+	echo 'Linux:<input style="width: 100%;" value="include(\''.realpath(dirname(__FILE__)).'/include.php\');"><br><br>';
+	echo 'Windows:<input style="width: 100%;" value="include(\''.realpath(dirname(__FILE__)).'\include.php\');"><br>';
 }
 //error_reporting(E_ALL);
 //ini_set("display_errors", 1);
