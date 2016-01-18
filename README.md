@@ -18,7 +18,7 @@
 
 		# To get absolute path go to: 
 
-			URL: https://yoursite.com/<WAFyy_directory>/include.php?location
+			URL: https://yoursite.com/<WAFyy_directory>/index.php?location (after login!)
 		
 		# Example:
 
