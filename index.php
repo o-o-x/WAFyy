@@ -1,3 +1,4 @@
+<? require_once('login.php'); ?>
 <!DOCTYPE html PUBLIC"-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -8,21 +9,65 @@
 	<head>
 		<script src="js/jquery-1.10.2.js" type="text/javascript"></script>
 		<script src="js/functions.js" type="text/javascript"></script>
-		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+		<script src="js/jquery-ui.js"></script>
+		<script src="js/sha256.js"></script>
 		<link rel="stylesheet" type="text/css" href="style/bootstrap.min.css" media="screen">
 		<link rel="stylesheet" type="text/css" href="style/style.css" media="screen">
 
 	</head>
 
 	<body>
+		<div id="login_popup">
+		<div class="modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+					<h4 class="modal-title">WAFyy - Login</h4>
+					</div>
 
+					<div class="modal-body">
+						<login class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+								<label class="col-lg-2 control-label">Password</label>
+									<div class="col-lg-10">
+										<input class="form-control" autocomplete="off" id="password" placeholder="Ex: Pa$sw0rd" type="password">
+										<div class="checkbox">
+								          <label>
+								            <input id="remember" type="checkbox" name="remember">Remember me
+								          </label>
+								        </div>
+							        </div>
+								</div>
+							</fieldset>
+						</login>
+					</div>
+
+							<div class="modal-footer">
+								<button id="submit_password" class="btn btn-primary">Submit</button>
+							</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+<? 
+	if(!$auth->isAuthorized())
+		exit;
+?>
+
+	
 		<div class="container">
 			<div id="tabs">
 			<ul class="nav nav-pills">
-		    <li><a href="#main">Main^</a></li>
-		    <li><a href="#filter">Filtering#</a></li>
-		    <li><a href="#firewall">|Application Firewall|</a></li>
-		    <li><a href="#cogwheel">CogWWheel*</a></li>
+		    <li><a href="#main">First page</a></li>
+		    <li><a class="body" href="#body">boDy</a></li>
+		    <li><a class="headers" href="#headers">headErs</a></li>
+		    <li><a class="regex" href="#regex">regeX</a></li>
+		    <li><a class="cogwheel" href="#cogwheel">Cogwheel</a></li>
+		    <li id="logout" class="logout"><a>exiT</a></li>
+
 			</ul>
 
 				<div id="main">  <!--  ### Main section ### -->
@@ -56,7 +101,27 @@
 				</div>
 
 
-				<div id="filter">  <!--  ### filter section ### -->
+				<div id="headers">  <!--  ### CogWWheel section ### -->
+					
+					<div class="col-lg-12">
+					<h2 id="type-blockquotes">HeadErs</h2>
+					<blockquote>
+					<p>Control Header Values To Avoid Dropping The Soap In The Shower</p>
+					<small>...</small>
+					</blockquote>
+					</div>
+
+					<div class="col-lg-7">
+						<div class="well bs-component">
+						<legend>Lets Go..</legend>
+							<div id="tuning"></div>
+						</div>
+					</div>
+
+				</div>
+
+
+				<div id="body">  <!--  ### body section ### -->
 
 				<div id="popup"></div>
 					<div class="col-lg-12">
@@ -85,9 +150,9 @@
 
 
 
-				<div id="firewall"> <!--  ### firewall section ### -->
+				<div id="regex"> <!--  ### regex section ### -->
 					<div class="col-lg-12">
-						<h2 id="type-blockquotes">Web app firewall (WAF)</h2>
+						<h2 id="type-blockquotes">RegeX</h2>
 						<blockquote>
 							<p>A web application firewall (WAF) is an appliance, server plugin, or filter that applies a set of rules to an HTTP conversation. Generally, these rules cover common attacks such as cross-site scripting (XSS) and SQL injection. By customizing the rules to your application, many attacks can be identified and blocked.</p>
 							<small>OWASP</small>
@@ -135,5 +200,6 @@
 
 			</div>  <!-- div:tabs -->
 	</div> 	<!-- div:container -->
+	
 </body>
-</html>	<!-- END:html-->
+</html>
