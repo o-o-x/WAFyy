@@ -10,4 +10,11 @@
 
 #INSTALL
 
-	# Upload WAFyy to a virtual directory and brows to /start.php 
+	# Upload WAFyy to a virtual directory and and go to https://yoursite.com/<WAFyy_directory>
+	# Enter your desired password (password > 10 characretrs)
+	# Add include.php to one of the config files (absolute path) 
+
+		Example: include("/var/lib/app-root/runtime/repo/WAFyy/include.php"); 
+
+	# 
+
