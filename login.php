@@ -1,8 +1,8 @@
 <?php 
 
 
-	// error_reporting(E_ALL);
-	// ini_set("display_errors", 1);
+	 error_reporting(E_ALL);
+	 ini_set("display_errors", 1);
 
 	//avoid clickjacking
  	header('X-Frame-Options: DENY');
@@ -15,7 +15,10 @@
 	require_once 'jcryption/include/sqAES.php';
 	require_once 'jcryption/include/JCryption.php';
 
+	if(!file_exists("db/WAFyy.sqlite3") || filesize("db/WAFyy.sqlite3") < 1){header("Location: start.php");}
+
 	$pdb = new SQLite3('db/WAFyy.sqlite3');
+
 
 	function getPassword()
 	{
