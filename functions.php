@@ -431,7 +431,7 @@ if ($auth->isAuthorized())
 		$db->exec("CREATE TABLE 'cogwheel' ('nick' TEXT PRIMARY KEY NOT NULL, 'name' TEXT, 'value' TEXT, 'date' DATETIME DEFAULT CURRENT_TIMESTAMP)");
 		$db->exec("INSERT INTO 'cogwheel' ('nick', 'name', 'value', 'rows') VALUES ('value_limit','Number of unique values to save per parameter', '10', '1')");
 		$db->exec("INSERT INTO 'cogwheel' ('nick', 'name', 'value', 'rows') VALUES ('special_char','All special chars allowed','#$%^&*()+=-[];,./{}|:<>?~', '1')");
-		$db->exec("INSERT INTO 'cogwheel' ('nick', 'name', 'value', 'rows') VALUES ('encryptedpassword','Hashed password (BCRYPT)','$2y$10$xf03hrCVQVC4E/sXX8OImuOVegPfnbO8era.A/eTwmX52a1rrRT/W', '1')");
+		$db->exec("INSERT INTO 'cogwheel' ('nick', 'name', 'value', 'rows') VALUES ('encryptedpassword','Hashed password (BCRYPT)','', '1')");
 		$db->exec("INSERT INTO 'cogwheel' ('nick', 'name', 'value', 'rows') VALUES ('collect_headers','Collect new headers', '1', '1')");
 		$db->exec("INSERT INTO 'cogwheel' ('nick', 'name', 'value', 'rows') VALUES ('collect_params','Collect new parameters', '1', '1')");
 		$db->exec("INSERT INTO 'cogwheel' ('nick', 'name', 'value', 'rows') VALUES ('letters_violation','Filiter violation stealth error (LETTERS)', 'in·tel·li·gent barking', '1')");
