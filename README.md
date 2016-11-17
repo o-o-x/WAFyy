@@ -1,13 +1,11 @@
-# WAFyy - README
+#WAFyy
 
-	# The idea
-
-		$ Build a simple Web Application Firewall to lock down HTTP parameters using simple alphanumeric filters and lenght method.
+Simple Web Application Firewall to lock down HTTP parameters using simple alphanumeric filters and lenght method.
 
 
 
 
-#INSTALL
+@HowToInstall
 
 	1. Upload WAFyy to a https://yoursite.com/<WAFyy_directory>
 	2. Go to https://yoursite.com/<WAFyy_directory>/index.php (IF first time u will be transferd to start.php to create password one time password, so keep it safe)
