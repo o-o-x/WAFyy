@@ -1,6 +1,7 @@
 #WAFyy
 
-Simple Web Application Firewall to lock down HTTP parameters using simple alphanumeric filters and lenght method.
+Simple Web Application Firewall to lock down HTTP parameters (request array) using simple alphanumeric filters and lenght method.
+Also includes simple bootstrap UI to set Headers/Parameters filter based rules.
 
 
 
